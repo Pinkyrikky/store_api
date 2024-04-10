@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Register</title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    
+    
+    <form action="/register" method="POST">
+      <% if(locals.error){ %>
+        <% if (error==="firstName is required"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                firstName must be filled out
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="text" placeholder="First Name" name="firstName"><br/><br>
+
+      <% if(locals.error){ %>
+        <% if (error==="lastName is required"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                lastName must be filled out
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="text" placeholder="Last Name" name="lastName"><br/><br>
+
+      <% if(locals.error){ %>
+        <% if (error==="email is required"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                email must be filled out
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="email" placeholder="Email Address" name="email"><br/><br>
+      <% if(locals.error){ %>
+        <% if (error==="phoneNumber is required"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                phoneNumber must be filled out
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="text" placeholder="Phone Number" name="phoneNumber"><br/><br>
+      <% if(locals.error){ %>
+        <% if (error==="password is required"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                password must be filled out
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="password" placeholder="Password" name="Password"><br/><br>
+      <% if(locals.error){ %>
+        <% if (error==="confirm password does not match"){ %>
+            <div class="name error" style="color: red; font-size: 14px;">
+                confirm password does not match
+            </div>
+      <%  }%>
+     <% }%>
+      <input type="password" placeholder="Confirm Password" name="confirm_Password"><br/><br>
+      <button type="submit">Register</button>
+    </form>
+  </body>
+</html>
