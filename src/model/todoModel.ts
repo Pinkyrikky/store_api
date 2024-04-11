@@ -12,7 +12,7 @@ export class TodoInstance extends Model<DataAtrributes> {}
 
 TodoInstance.init({
   id: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
     primaryKey: true,
     allowNull: false,
   },
@@ -25,7 +25,7 @@ TodoInstance.init({
     allowNull: false,
   },
   userId:{
-    type:DataTypes.UUIDV4,
+    type:DataTypes.UUID,
   },
 },
   {sequelize: db, tableName: "todo"}

@@ -11,7 +11,7 @@ class TodoInstance extends sequelize_1.Model {
 exports.TodoInstance = TodoInstance;
 TodoInstance.init({
     id: {
-        type: sequelize_1.DataTypes.UUIDV4,
+        type: sequelize_1.DataTypes.UUID,
         primaryKey: true,
         allowNull: false,
     },
@@ -24,6 +24,6 @@ TodoInstance.init({
         allowNull: false,
     },
     userId: {
-        type: sequelize_1.DataTypes.UUIDV4,
+        type: sequelize_1.DataTypes.UUID,
     },
 }, { sequelize: databaseConfig_1.default, tableName: "todo" });

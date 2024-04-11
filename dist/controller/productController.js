@@ -9,53 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSingleProduct = exports.getProducts = exports.createProduct = exports.uploadImageAndSaveToDatabase = void 0;
+exports.deleteProduct = exports.upDateProduct = exports.getSingleProduct = exports.getProducts = exports.createProduct = void 0;
 const uuid_1 = require("uuid");
 const utils_1 = require("../utils/utils");
 const productModel_1 = require("../model/productModel");
-const cloudinary_1 = require("cloudinary");
-// Configure Cloudinary with your credentials
-cloudinary_1.v2.config({
-    cloud_name: 'pinkyrikky',
-    api_key: '685231324552174',
-    api_secret: '685231324552174'
-});
-// Function to upload an image
-function uploadImage(file) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const result = yield cloudinary_1.v2.uploader.upload(file);
-            console.log(result);
-            return result;
-        }
-        catch (error) {
-            console.error(error);
-            throw error;
-        }
-    });
-}
-uploadImage('./')
-    .then(result => {
-    console.log('Image uploaded successfully:', result.url);
-})
-    .catch(error => {
-    console.error('Error uploading image:', error);
-});
-function uploadImageAndSaveToDatabase(file, productId) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const result = yield cloudinary_1.v2.uploader.upload(file.path); // Upload image to Cloudinary
-            const imageUrl = result.secure_url; // Get the secure URL of the uploaded image
-            yield productModel_1.ProductInstance.update({ imageUrl }, { where: { id: productId } }); // Update imageUrl attribute in database
-            return imageUrl; // Return the image URL
-        }
-        catch (error) {
-            console.error('Error uploading image to Cloudinary:', error);
-            throw error;
-        }
-    });
-}
-exports.uploadImageAndSaveToDatabase = uploadImageAndSaveToDatabase;
 const createProduct = function (req, res) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -87,9 +44,9 @@ const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             offset: offset,
         });
         return res.status(200).json({
-            msg: "Todos succesffully fetched",
+            msg: "Products succesffully fetched",
             count: getAllProducts.count,
-            todo: getAllProducts.rows,
+            product: getAllProducts.rows,
         });
     }
     catch (error) {
@@ -103,11 +60,11 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
         const getOneProduct = yield productModel_1.ProductInstance.findOne({ where: { id: id } });
         if (!getOneProduct) {
             return res.status(400).json({
-                error: "cannot find todo"
+                error: "cannot find Product"
             });
         }
         return res.status(200).json({
-            msg: 'The todo has been found',
+            msg: 'The Product has been found',
             product: getOneProduct,
         });
     }
@@ -116,3 +73,51 @@ const getSingleProduct = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getSingleProduct = getSingleProduct;
+const upDateProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        //Extract parameter from the req.body
+        const { productName, description, price } = req.body;
+        const { id } = req.params;
+        //VALIDATE WITH JOI
+        const validateResult = utils_1.UpdateProductSchema.validate(req.body, utils_1.option);
+        if (validateResult.error) {
+            res.status(400).json({ Error: validateResult.error.details[0].message });
+        }
+        const upDateProduct = yield productModel_1.ProductInstance.findOne({ where: { id: id } });
+        if (!upDateProduct) {
+            return res.status(400).json({
+                error: "cannot find product"
+            });
+        }
+        const updateRecord = yield upDateProduct.update({ productName, description, price });
+        return res.status(200).json({
+            msg: "product has been updated successfully",
+            upDateProduct
+        });
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.upDateProduct = upDateProduct;
+const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const record = yield productModel_1.ProductInstance.findOne({ where: { id: id } });
+        if (!record) {
+            return res.status(400).json({
+                error: 'The provided ID does not exist.'
+            });
+        }
+        const deleteRecord = yield record.destroy();
+        res.status(200).json({
+            message: 'Deleted Successfully',
+            deleteRecord
+        });
+        // const foundItem=await TodoInstance.destroy({where:{id}});
+    }
+    catch (error) {
+        console.log(error);
+    }
+});
+exports.deleteProduct = deleteProduct;

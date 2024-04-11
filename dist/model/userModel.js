@@ -13,7 +13,7 @@ class UserInstance extends sequelize_1.Model {
 exports.UserInstance = UserInstance;
 UserInstance.init({
     id: {
-        type: sequelize_1.DataTypes.UUIDV4,
+        type: sequelize_1.DataTypes.UUID,
         allowNull: false,
     },
     firstName: {
@@ -33,7 +33,7 @@ UserInstance.init({
         unique: true,
     },
     phoneNumber: {
-        type: sequelize_1.DataTypes.INTEGER,
+        type: sequelize_1.DataTypes.STRING,
         primaryKey: true,
         allowNull: false,
     },
@@ -47,7 +47,7 @@ UserInstance.init({
         primaryKey: true,
         allowNull: false,
     },
-}, { sequelize: databaseConfig_1.default, tableName: "user" });
+}, { sequelize: databaseConfig_1.default, tableName: "users" });
 UserInstance.hasMany(productModel_1.ProductInstance, { foreignKey: "userId", as: "products" });
-todoModel_1.TodoInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "user" });
-productModel_1.ProductInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "user" });
+todoModel_1.TodoInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "users" });
+productModel_1.ProductInstance.belongsTo(UserInstance, { foreignKey: "userId", as: "users" });

@@ -22,7 +22,7 @@ const databaseConfig_1 = __importDefault(require("./config/databaseConfig"));
 // console.log(cloudinary.config());
 var app = (0, express_1.default)();
 //Connecting to database
-databaseConfig_1.default.sync().then(() => {
+databaseConfig_1.default.sync({ force: true }).then(() => {
     console.log("Database connected succesfully");
 }).catch(err => {
     console.error("Error connecting to Database", err);

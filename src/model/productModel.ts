@@ -1,26 +1,21 @@
 import db from "../config/databaseConfig";
 import { DataTypes, Model } from "sequelize";
-import {v2 as cloudinary} from 'cloudinary';
-          
-cloudinary.config({ 
-  cloud_name: 'pinkyrikky', 
-  api_key: '685231324552174', 
-  api_secret: '7v5sNWG0CpJNEAvfS1BqfBuDHis' 
-});
+
 
 export interface DataAtrributes {
   id: string;
   productName:string;
   description: string;
-  price:string;
+  price:number;
   imageUrl: string; 
+  userId?:string;
 }
 
 export class ProductInstance extends Model<DataAtrributes> {}
 
 ProductInstance.init({
     id: {
-        type: DataTypes.UUIDV4,
+        type: DataTypes.UUID,
         allowNull: false,
       },
       productName: {
@@ -41,6 +36,9 @@ ProductInstance.init({
       imageUrl: {
         type: DataTypes.STRING, // Assuming you'll store the image URL as a string
         allowNull: true, // Allow null initially until image is uploaded
+      },
+      userId:{
+        type: DataTypes.UUID,
       }
 },
 {sequelize: db, tableName: "products"}

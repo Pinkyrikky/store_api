@@ -11,6 +11,6 @@ const router = express_1.default.Router();
 router.post("/create_products", auth_1.auth, productController_1.createProduct);
 router.get("/get_products", auth_1.auth, productController_1.getProducts);
 router.get("/get_Single_Products/:id", auth_1.auth, productController_1.getSingleProduct);
-// router.patch("/update_todo/:id", auth, upDateTodo);
-// router.delete("/delete_todo/:id", auth, deleteTodo);
+router.patch("/update_Product/:id", auth_1.auth, productController_1.upDateProduct);
+router.delete("/delete_Product/:id", auth_1.auth, productController_1.deleteProduct);
 exports.default = router;

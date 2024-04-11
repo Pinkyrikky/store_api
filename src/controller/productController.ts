@@ -1,47 +1,7 @@
 import { Request, Response } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { CreateProductSchema, option } from "../utils/utils";
+import { CreateProductSchema, UpdateProductSchema, option } from "../utils/utils";
 import { ProductInstance } from "../model/productModel";
-import { v2 as cloudinary } from 'cloudinary';
-
-// Configure Cloudinary with your credentials
-cloudinary.config({
-  cloud_name: 'pinkyrikky',
-  api_key: '685231324552174',
-  api_secret: '685231324552174'
-});
-
-// Function to upload an image
-async function uploadImage(file: string) {
-  try {
-    const result = await cloudinary.uploader.upload(file);
-    console.log(result);
-    return result;
-  } catch (error) {
-    console.error(error);
-    throw error;
-  }
-}
-
-uploadImage('./')
-  .then(result => {
-    console.log('Image uploaded successfully:', result.url);
-  })
-  .catch(error => {
-    console.error('Error uploading image:', error);
-  });
-
-export async function uploadImageAndSaveToDatabase(file: Express.Multer.File, productId: string) {
-    try {
-      const result = await cloudinary.uploader.upload(file.path); // Upload image to Cloudinary
-      const imageUrl = result.secure_url; // Get the secure URL of the uploaded image
-      await ProductInstance.update({ imageUrl }, { where: { id: productId } }); // Update imageUrl attribute in database
-      return imageUrl; // Return the image URL
-    } catch (error) {
-      console.error('Error uploading image to Cloudinary:', error);
-      throw error;
-    }
-  }
 
 export const createProduct = async function (req: Request | any, res: Response) {
     try {
@@ -79,9 +39,9 @@ export const createProduct = async function (req: Request | any, res: Response) 
         offset: offset,
       });
       return res.status(200).json({
-        msg: "Todos succesffully fetched",
+        msg: "Products succesffully fetched",
         count: getAllProducts.count,
-        todo: getAllProducts.rows,
+        product: getAllProducts.rows,
       });
     } catch (error) {
       console.log(error);
@@ -95,15 +55,74 @@ export const createProduct = async function (req: Request | any, res: Response) 
   
       if(!getOneProduct){
         return res.status(400).json({
-          error: "cannot find todo"
+          error: "cannot find Product"
         })
       }
   
       return res.status(200).json({
-        msg: 'The todo has been found',
+        msg: 'The Product has been found',
         product:getOneProduct,
       })
     }catch (error) {
       console.log(error);
     }
   }
+
+  export const upDateProduct = async (req: Request, res: Response) => {
+    try {
+      //Extract parameter from the req.body
+  
+      const {productName, description, price } = req.body;
+  
+      const { id } = req.params;
+  
+      //VALIDATE WITH JOI
+      const validateResult = UpdateProductSchema.validate(req.body, option);
+  
+      if (validateResult.error) {
+        res.status(400).json({ Error: validateResult.error.details[0].message });
+      }
+  
+      const upDateProduct = await ProductInstance.findOne({ where: { id: id } });
+  
+      if(!upDateProduct){
+        return res.status(400).json({
+          error: "cannot find product"
+        })
+      }
+  
+      const updateRecord = await  upDateProduct.update({productName, description,price});
+      return res.status(200).json({
+        msg:"product has been updated successfully",
+        upDateProduct
+      })
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  
+  
+  export const deleteProduct = async(req:Request,res:Response)=>{
+    try{
+      const {id} = req.params;
+  
+      const record = await ProductInstance.findOne({where:{id: id}})
+      if (!record) {
+        return res.status(400).json({
+          error:'The provided ID does not exist.'
+        })
+      }
+      const deleteRecord = await record.destroy();
+      res.status(200).json({
+        message : 'Deleted Successfully',
+        deleteRecord
+      })
+      
+      // const foundItem=await TodoInstance.destroy({where:{id}});
+    
+     
+    }catch (error) {
+      console.log(error);
+    }
+  }
+  

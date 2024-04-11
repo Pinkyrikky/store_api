@@ -22,7 +22,7 @@ import db from './config/databaseConfig';
 var app = express();
 
 //Connecting to database
-db.sync().then(()=>{
+db.sync({force:true}).then(()=>{
   console.log("Database connected succesfully")
 }).catch(err=>{
   console.error("Error connecting to Database", err);

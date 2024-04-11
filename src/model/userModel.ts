@@ -8,7 +8,7 @@ export interface DataAtrributes {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
   address:string;
   password: string;
 }
@@ -17,7 +17,7 @@ export class UserInstance extends Model<DataAtrributes> {}
 
 UserInstance.init({
   id: {
-    type: DataTypes.UUIDV4,
+    type: DataTypes.UUID,
     allowNull: false,
   },
   firstName: {
@@ -37,7 +37,7 @@ UserInstance.init({
     unique: true,
   },
   phoneNumber: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     primaryKey: true,
     allowNull: false,
   },
@@ -52,9 +52,9 @@ UserInstance.init({
     allowNull: false,
   },
 },
-  {sequelize: db, tableName: "user"}
+  {sequelize: db, tableName: "users"}
 );
 
 UserInstance.hasMany(ProductInstance, {foreignKey: "userId", as : "products"})
-TodoInstance.belongsTo(UserInstance, {foreignKey: "userId", as : "user"});
-ProductInstance.belongsTo(UserInstance, {foreignKey: "userId", as : "user"});
+TodoInstance.belongsTo(UserInstance, {foreignKey: "userId", as : "users"});
+ProductInstance.belongsTo(UserInstance, {foreignKey: "userId", as : "users"});
